@@ -5,6 +5,7 @@ import { API } from '../lib/api';
 import { Container, Grid, Typography, Box } from '@mui/material';
 import CommonButton from './common/CommonButton';
 import CommonTypography from './common/CommonTypography';
+import ProfilePicture from './common/ProfilePicture';
 
 export default function SearchPage({ searchedData, setIsUpdated, isUpdated }) {
   const [poems, setPoems] = useState(null);
@@ -88,18 +89,28 @@ export default function SearchPage({ searchedData, setIsUpdated, isUpdated }) {
             width: 200,
             display: 'flex',
             flexDirection: 'row',
-            flexWrap: 'wrap'
+            flexWrap: 'wrap',
+            paddingLeft: '20px'
           }}
         >
           {users?.map((user) => (
-            <CommonTypography
-              onClick={navigateToUser}
-              id={user.id}
-              key={user.id}
-              sx={{ padding: '20px' }}
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center'
+              }}
+              className='user-data'
             >
-              {user.username}
-            </CommonTypography>
+              <ProfilePicture cloudinaryImageId={user.profile_image} />
+              <CommonTypography
+                sx={{ fontSize: '18px' }}
+                onClick={navigateToUser}
+                id={user.id}
+              >
+                {user.username}
+              </CommonTypography>
+            </Box>
           ))}
         </Box>
         {authors?.length === 0 ? (
@@ -133,6 +144,18 @@ export default function SearchPage({ searchedData, setIsUpdated, isUpdated }) {
           <Typography sx={{ fontSize: '25px', padding: '20px' }}>
             Poems
           </Typography>
+        )}
+        {poems?.length > 6 ? (
+          <CommonTypography
+            onClick={togglePoemDropdown}
+            sx={{ padding: '20px' }}
+          >
+            {isPoemDropdownOpen === true
+              ? 'View more poems'
+              : 'View less poems'}
+          </CommonTypography>
+        ) : (
+          <></>
         )}
         <Box
           sx={{
@@ -174,18 +197,6 @@ export default function SearchPage({ searchedData, setIsUpdated, isUpdated }) {
             );
           })}
         </Box>
-        {poems?.length > 6 ? (
-          <CommonTypography
-            onClick={togglePoemDropdown}
-            sx={{ padding: '20px' }}
-          >
-            {isPoemDropdownOpen === true
-              ? 'View more poems'
-              : 'View less poems'}
-          </CommonTypography>
-        ) : (
-          <></>
-        )}
 
         {posts?.length === 0 ? (
           <></>
@@ -225,13 +236,25 @@ export default function SearchPage({ searchedData, setIsUpdated, isUpdated }) {
                 >
                   {post.title}
                 </p>
-                <CommonTypography
-                  onClick={navigateToUser}
-                  id={post.author.id}
-                  key={post.author.id}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}
+                  className='user-data'
                 >
-                  {post.author.username}
-                </CommonTypography>
+                  <ProfilePicture
+                    cloudinaryImageId={post.author.profile_image}
+                  />
+                  <CommonTypography
+                    sx={{ fontSize: '18px' }}
+                    onClick={navigateToUser}
+                    id={post.author.id}
+                  >
+                    {post.author.username}
+                  </CommonTypography>
+                </Box>
               </Box>
             );
           })}

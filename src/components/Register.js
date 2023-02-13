@@ -74,8 +74,8 @@ export default function Register({ theme }) {
       });
 
       AUTH.setToken(loginData.data.token);
-      NOTIFY.SUCCESS(loginData.data.message);
-      navigate('/');
+      NOTIFY.SUCCESS(`Welcome, ${loginData.data.username}!`);
+      navigate(-1);
     } catch (e) {
       console.log(e);
       setError(true);

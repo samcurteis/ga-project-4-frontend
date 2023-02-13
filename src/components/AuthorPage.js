@@ -2,15 +2,12 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { API } from '../lib/api';
 import { AUTH } from '../lib/auth';
-// import { useAuthenticated } from '../hooks/useAuthenticated';
+import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
+import { useAuthenticated } from '../hooks/useAuthenticated';
+import { NOTIFY } from '../lib/notifications';
 
-import {
-  Container,
-  // Box,
-  // CardActions,
-  // CardContent,
-  Typography
-} from '@mui/material';
+import { Container, Box, Typography } from '@mui/material';
+import { IconContext } from 'react-icons';
 
 import CommonTypography from './common/CommonTypography';
 import CommonButton from './common/CommonButton';
@@ -23,6 +20,23 @@ export default function AuthorPage() {
   const [singleAuthor, setSingleAuthor] = useState(null);
   const currentUserId = AUTH.getPayload().sub;
   const [isUpdated, setIsUpdated] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [isLoggedIn] = useAuthenticated();
+
+  function OrangeHeart() {
+    return (
+      <IconContext.Provider
+        value={{
+          color: '#ffa500',
+          style: { display: 'flex', alignItems: 'center' }
+        }}
+      >
+        <div>
+          <AiFillHeart />
+        </div>
+      </IconContext.Provider>
+    );
+  }
 
   useEffect(() => {
     API.GET(API.ENDPOINTS.singleAuthor(id))
@@ -32,6 +46,15 @@ export default function AuthorPage() {
       .catch(({ message, response }) => {
         console.error(message, response);
       });
+    API.GET(API.ENDPOINTS.singleUser(currentUserId))
+      .then(({ data }) => {
+        setCurrentUser(data);
+        console.log('current user is', data);
+      })
+      .catch(({ message, response }) => {
+        console.error(message, response);
+      });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, isUpdated]);
 
   const toggleFavorite = () => {
@@ -52,6 +75,15 @@ export default function AuthorPage() {
       .catch((e) => console.log(e));
   };
 
+  const deleteAuthor = () =>
+    API.DELETE(API.ENDPOINTS.singleAuthor(id), API.getHeaders())
+      .then(({ data }) => {
+        NOTIFY.SUCCESS(`${singleAuthor.name} deleted`);
+        console.log(data);
+        navigate(-1);
+      })
+      .catch((e) => console.log(e));
+
   // useEffect(() => {
 
   //   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -60,19 +92,36 @@ export default function AuthorPage() {
   return (
     <Container className='Page'>
       <CommonButton onClick={goBack}>GO BACK</CommonButton>
+      {currentUser?.is_staff ? (
+        <>
+          <CommonButton onClick={deleteAuthor}>Delete author</CommonButton>
+        </>
+      ) : (
+        <></>
+      )}
       <Typography
         sx={{ fontSize: '30px', marginTop: '10px', marginBottom: '15px' }}
       >
         {singleAuthor?.name}
       </Typography>
-      <CommonButton
-        sx={{ padding: '10px' }}
-        onClick={toggleFavorite}
-        name='post_favorites'
-      >
-        {singleAuthor?.favorites.length}{' '}
-        {singleAuthor?.favorites.length === 1 ? 'favourite' : 'favourites'}
-      </CommonButton>
+      {isLoggedIn && (
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          {singleAuthor?.favorites.includes(currentUserId) ? (
+            <OrangeHeart />
+          ) : (
+            <AiOutlineHeart />
+          )}
+          <CommonButton
+            sx={{ padding: '10px' }}
+            onClick={toggleFavorite}
+            name='post_favorites'
+          >
+            {singleAuthor?.favorites.length}{' '}
+            {singleAuthor?.favorites.length === 1 ? 'favourite' : 'favourites'}
+          </CommonButton>
+        </Box>
+      )}
+      <p>Poems</p>
       {singleAuthor?.poems.map((poem) => (
         <CommonTypography
           className='poem-list'

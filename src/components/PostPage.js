@@ -3,12 +3,15 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { API } from '../lib/api';
 import { AUTH } from '../lib/auth';
 import { NOTIFY } from '../lib/notifications';
+import { IconContext } from 'react-icons';
+import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
+import { HiOutlineThumbUp, HiThumbUp } from 'react-icons/hi';
 
 import { Container, Box, TextareaAutosize, Typography } from '@mui/material';
 
 import CommentCard from './common/CommentCard';
 import CommonButton from './common/CommonButton';
-// import CommonTypography from './common/CommonTypography';
+import { useAuthenticated } from '../hooks/useAuthenticated';
 
 export default function PostPage({ singlePost, setSinglePost }) {
   // const [isLoggedIn] = useAuthenticated();
@@ -16,6 +19,7 @@ export default function PostPage({ singlePost, setSinglePost }) {
   const goBack = () => navigate(-1);
   const navigateToUser = (e) => navigate(`/users/${e.target.id}`);
   const navigateToNewPost = () => navigate(`/new-post`);
+  const [isLoggedIn] = useAuthenticated();
   const { id } = useParams();
 
   // const [currentUser, setCurrentUser] = useState(null);
@@ -27,6 +31,35 @@ export default function PostPage({ singlePost, setSinglePost }) {
   const [data, setData] = useState(initialData);
   const [updateData, setUpdateData] = useState(false);
   const currentUserId = AUTH.getPayload().sub;
+
+  function OrangeHeart() {
+    return (
+      <IconContext.Provider
+        value={{
+          color: '#ffa500',
+          style: { display: 'flex', alignItems: 'center' }
+        }}
+      >
+        <div>
+          <AiFillHeart />
+        </div>
+      </IconContext.Provider>
+    );
+  }
+  function OrangeThumbUp() {
+    return (
+      <IconContext.Provider
+        value={{
+          color: '#ffa500',
+          style: { display: 'flex', alignItems: 'center' }
+        }}
+      >
+        <div>
+          <HiThumbUp />
+        </div>
+      </IconContext.Provider>
+    );
+  }
 
   useEffect(() => {
     API.GET(API.ENDPOINTS.singlePost(id))
@@ -110,7 +143,12 @@ export default function PostPage({ singlePost, setSinglePost }) {
 
   return (
     <Container
-      sx={{ display: 'flex', flexDirection: 'column' }}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        marginBottom: '100px',
+        marginLeft: '50px'
+      }}
       className='Page'
     >
       <CommonButton sx={{ justifyContent: 'left' }} onClick={goBack}>
@@ -129,16 +167,38 @@ export default function PostPage({ singlePost, setSinglePost }) {
           <CommonButton onClick={deletePost}>DELETE</CommonButton>
         </Box>
       )}
-      <Box name='like-favourite-buttons' sx={{ justifyContent: 'left' }}>
-        <CommonButton onClick={toggleLike} name='post_likes'>
-          {singlePost?.post_likes.length}{' '}
-          {singlePost?.post_likes.length === 1 ? 'like' : 'likes'}
-        </CommonButton>
-        <CommonButton onClick={toggleFavorite} name='post_favorites'>
-          {singlePost?.post_favorites.length}{' '}
-          {singlePost?.post_favorites.length === 1 ? 'favourite' : 'favourites'}
-        </CommonButton>
-      </Box>
+      {isLoggedIn && (
+        <Box
+          name='like-favourite-buttons'
+          sx={{
+            display: 'flex',
+            justifyContent: 'left',
+            alignItems: 'center',
+            mb: 2
+          }}
+        >
+          {singlePost?.post_likes.includes(currentUserId) ? (
+            <OrangeThumbUp />
+          ) : (
+            <HiOutlineThumbUp />
+          )}
+          <CommonButton onClick={toggleLike} name='post_likes'>
+            {singlePost?.post_likes.length}{' '}
+            {singlePost?.post_likes.length === 1 ? 'like' : 'likes'}
+          </CommonButton>
+          {singlePost?.post_favorites.includes(currentUserId) ? (
+            <OrangeHeart />
+          ) : (
+            <AiOutlineHeart />
+          )}
+          <CommonButton onClick={toggleFavorite} name='post_favorites'>
+            {singlePost?.post_favorites.length}{' '}
+            {singlePost?.post_favorites.length === 1
+              ? 'favourite'
+              : 'favourites'}
+          </CommonButton>
+        </Box>
+      )}
       {singlePost?.comments?.map((comment) => {
         return (
           <CommentCard
@@ -153,26 +213,29 @@ export default function PostPage({ singlePost, setSinglePost }) {
           />
         );
       })}
-      <Box name='add-comment' sx={{ flexDirection: 'column' }}>
-        <TextareaAutosize
-          name='text'
-          value={data.text}
-          onChange={handleChange}
-          placeholder='Leave a comment'
-          style={{
-            display: 'flex',
-            width: '250px',
-            height: '40px',
-            marginLeft: '10px'
-          }}
-        />
-        <CommonButton
-          sx={{ display: 'flex', paddingBottom: '30px', paddingTop: '10px' }}
-          onClick={addComment}
-        >
-          ADD COMMENT
-        </CommonButton>
-      </Box>
+      {isLoggedIn && (
+        <Box name='add-comment' sx={{ flexDirection: 'column' }}>
+          <TextareaAutosize
+            name='text'
+            value={data.text}
+            onChange={handleChange}
+            placeholder='Leave a comment'
+            style={{
+              display: 'flex',
+              width: '250px',
+              height: '40px',
+              marginLeft: '10px',
+              marginTop: '10px'
+            }}
+          />
+          <CommonButton
+            sx={{ display: 'flex', paddingBottom: '30px', paddingTop: '10px' }}
+            onClick={addComment}
+          >
+            ADD COMMENT
+          </CommonButton>
+        </Box>
+      )}
     </Container>
   );
 }

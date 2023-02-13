@@ -1,9 +1,9 @@
 import { useState } from 'react';
-// import { useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
-import { Button, TextareaAutosize } from '@mui/material';
+import { Button, TextareaAutosize, Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 
 import { AUTH } from '../../lib/auth';
@@ -11,6 +11,7 @@ import { API } from '../../lib/api';
 import { NOTIFY } from '../../lib/notifications';
 
 import ProfilePicture from './ProfilePicture';
+import CommonTypography from './CommonTypography';
 
 export default function ReviewCard({
   text,
@@ -23,7 +24,8 @@ export default function ReviewCard({
 }) {
   const [isEditMode, setIsEditMode] = useState(false);
   const [commentText, setCommentText] = useState(text);
-  // const { id } = useParams();
+  const navigate = useNavigate();
+  const navigateToOwner = () => navigate(`/users/${owner.id}`);
 
   const toggleEditMode = () => setIsEditMode(!isEditMode);
 
@@ -59,14 +61,28 @@ export default function ReviewCard({
       .catch((e) => console.log(e));
 
   return (
-    <Card sx={{ minWidth: 275 }}>
+    <Card sx={{ minWidth: 200, maxWidth: 500, marginRight: '20px' }}>
       <CardContent>
-        {owner.profile_image && (
-          <ProfilePicture cloudinaryImageId={owner.profile_image} />
-        )}
-        <Typography sx={{ fontSize: 14 }} color='text.secondary' gutterBottom>
-          {owner.username}
-        </Typography>
+        <Box
+          className='user-data'
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center'
+          }}
+        >
+          {owner.profile_image && (
+            <ProfilePicture cloudinaryImageId={owner.profile_image} />
+          )}
+          <CommonTypography
+            onClick={navigateToOwner}
+            sx={{ fontSize: 14 }}
+            color='text.secondary'
+            gutterBottom
+          >
+            {owner.username}
+          </CommonTypography>
+        </Box>
         {isEditMode ? (
           <TextareaAutosize
             value={commentText}
@@ -74,7 +90,7 @@ export default function ReviewCard({
             style={{ width: '100%', height: '22px' }}
           />
         ) : (
-          <Typography variant='h5' component='div'>
+          <Typography variant='h8' component='div'>
             {text}
           </Typography>
         )}

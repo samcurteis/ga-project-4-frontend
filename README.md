@@ -68,3 +68,38 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+# Title
+
+## Smaller title
+
+### Even smaller text
+
+#### Even even smaller text
+
+## Technologies used in a project
+
+- Node.js
+  - This is the runtime environment.
+    - sub sub item
+- React.js
+
+To run the application:
+
+```sh
+
+```
+
+```js
+
+```
+
+this is some _italicised_ text
+
+[Click here to see my live application](https://www.myapp.com)
+
+[You can see a file here](./package.json)
+
+use quicktime or sth to record the screen of user flow, turn it into gif and add to your read me
+
+<img src='local storage'>

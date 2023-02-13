@@ -21,6 +21,7 @@ export default function UserPage({ setSinglePost, setSinglePoem }) {
   };
   const navigateToPoem = (e) => navigate(`/poems/${e.target.id}`);
   const navigateToAuthor = (e) => navigate(`/authors/${e.target.id}`);
+  const navigateToUser = (e) => navigate(`/users/${e.target.id}`);
   const navigateToNewPoem = () => {
     setSinglePoem(null);
     navigate(`/new-poem`);
@@ -53,7 +54,7 @@ export default function UserPage({ setSinglePost, setSinglePoem }) {
         <Box
           name='first-section'
           sx={{
-            width: '50vw',
+            width: '40vw',
             display: 'flex',
             flexWrap: 'wrap',
             justifyContent: 'space-between'
@@ -83,10 +84,12 @@ export default function UserPage({ setSinglePost, setSinglePoem }) {
               />
               <h1>{singleUser?.username}</h1>
             </Box>
-            {singleUser?.is_staff && (
+            {singleUser?.is_staff & AUTH.isOwner(+id) ? (
               <CommonButton onClick={navigateToNewPoem}>
                 add new poem
               </CommonButton>
+            ) : (
+              <></>
             )}
           </Box>
 
@@ -123,7 +126,8 @@ export default function UserPage({ setSinglePost, setSinglePoem }) {
         <Box
           name='second-section'
           sx={{
-            width: '50vw',
+            marginTop: 10,
+            width: '40vw',
             display: 'flex',
             flexWrap: 'wrap',
             justifyContent: 'space-between'
@@ -188,13 +192,26 @@ export default function UserPage({ setSinglePost, setSinglePoem }) {
                 >
                   {post.title}
                 </p>
-                <CommonTypography
-                  onClick={navigateToAuthor}
-                  key={post.author.id}
-                  id={post.author.id}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingLeft: '20px'
+                  }}
+                  className='user-data'
                 >
-                  {post.author.username}
-                </CommonTypography>
+                  <ProfilePicture
+                    cloudinaryImageId={post.author.profile_image}
+                  />
+                  <CommonTypography
+                    sx={{ fontSize: '18px' }}
+                    onClick={navigateToUser}
+                    id={post.author.id}
+                  >
+                    {post.author.username}
+                  </CommonTypography>
+                </Box>
               </>
             ))}
           </Box>

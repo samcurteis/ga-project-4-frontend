@@ -5,6 +5,7 @@ import { API } from '../lib/api';
 import { Box, Typography } from '@mui/material';
 import CommonButton from './common/CommonButton';
 import CommonTypography from './common/CommonTypography';
+import ProfilePicture from './common/ProfilePicture';
 
 export default function Home() {
   // const [poems, setPoems] = useState(null);
@@ -66,7 +67,7 @@ export default function Home() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          height: '90vh',
+          height: '80vh',
           width: '100vw'
         }}
       >
@@ -120,13 +121,25 @@ export default function Home() {
                 <p className='post-title' onClick={navigateToPost} id={post.id}>
                   {post.title}
                 </p>
-                <CommonTypography
-                  sx={{ fontSize: '18px' }}
-                  onClick={navigateToUser}
-                  id={post.author.id}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}
+                  className='user-data'
                 >
-                  {post.author.username}
-                </CommonTypography>
+                  <ProfilePicture
+                    cloudinaryImageId={post.author.profile_image}
+                  />
+                  <CommonTypography
+                    sx={{ fontSize: '18px' }}
+                    onClick={navigateToUser}
+                    id={post.author.id}
+                  >
+                    {post.author.username}
+                  </CommonTypography>
+                </Box>
               </Box>
             ))}
           </Box>
@@ -178,7 +191,7 @@ export default function Home() {
             {popularPoems?.map((poem) => {
               const popularPoemTitle = poem.title.split('\n').join('<br><br/>');
               return (
-                <Box key={poem.id}>
+                <Box key={poem.id} sx={{ width: 200 }}>
                   <p
                     className='poem-title'
                     onClick={navigateToPoem}
@@ -233,13 +246,25 @@ export default function Home() {
                     ? 'favourite'
                     : 'favourites'}
                 </Typography>
-                <CommonTypography
-                  sx={{ fontSize: '18px' }}
-                  onClick={navigateToUser}
-                  id={post.author.id}
+                <Box
+                  sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center'
+                  }}
+                  className='user-data'
                 >
-                  {post.author.username}
-                </CommonTypography>
+                  <ProfilePicture
+                    cloudinaryImageId={post.author.profile_image}
+                  />
+                  <CommonTypography
+                    sx={{ fontSize: '18px' }}
+                    onClick={navigateToUser}
+                    id={post.author.id}
+                  >
+                    {post.author.username}
+                  </CommonTypography>
+                </Box>
               </Box>
             ))}
           </Box>

@@ -39,7 +39,7 @@ let theme = createTheme({
       main: '#0c090d'
     },
     link: {
-      main: '#ef7b45'
+      main: '#ffa500'
     }
   },
   typography: {

@@ -6,8 +6,12 @@ import { AUTH } from '../lib/auth';
 import { API } from '../lib/api';
 import { useAuthenticated } from '../hooks/useAuthenticated';
 import ProfilePicture from './common/ProfilePicture';
-import CommonTypography from './common/CommonTypography';
 import CommonButton from './common/CommonButton';
+import CssBaseline from '@mui/material/CssBaseline';
+import navbarLogo from '../assets/feather-32.ico';
+// import useScrollTrigger from '@mui/material/useScrollTrigger';
+// import Slide from '@mui/material/Slide';
+// import PropTypes from 'prop-types';
 
 export default function Navbar({ setSearchedData, setIsUpdated }) {
   const navigate = useNavigate();
@@ -47,8 +51,33 @@ export default function Navbar({ setSearchedData, setIsUpdated }) {
     navigate('/');
   };
 
+  // function HideOnScroll(props) {
+  //   const { children, window } = props;
+  //   // Note that you normally won't need to set the window ref as useScrollTrigger
+  //   // will default to window.
+  //   // This is only being set here because the demo is in an iframe.
+  //   const trigger = useScrollTrigger({ target: window ? window() : undefined });
+
+  //   return (
+  //     <Slide appear={false} direction='down' in={!trigger}>
+  //       {children}
+  //     </Slide>
+  //   );
+  // }
+
+  // HideOnScroll.propTypes = {
+  //   children: PropTypes.element.isRequired,
+  //   /**
+  //    * Injected by the documentation to work in an iframe.
+  //    * You won't need it on your project.
+  //    */
+  //   window: PropTypes.func
+  // };
+
   return (
     <Box>
+      <CssBaseline />
+      {/* <HideOnScroll> */}
       <AppBar>
         <Toolbar
           className='navbar'
@@ -70,6 +99,7 @@ export default function Navbar({ setSearchedData, setIsUpdated }) {
             }}
             className='site-options'
           >
+            <img alt='feather-icon' src={navbarLogo} />
             <p onClick={navigateToHome} className='navbar-item home-icon'>
               Poet's Corner
             </p>
@@ -123,14 +153,17 @@ export default function Navbar({ setSearchedData, setIsUpdated }) {
           >
             {isLoggedIn ? (
               <>
-                <CommonTypography
-                  sx={{ alignSelf: 'center', paddingTop: 0.5 }}
+                <CommonButton
+                  sx={{
+                    alignSelf: 'center',
+                    marginBottom: '0px'
+                  }}
                   className='navbar-item'
                   onClick={logout}
                 >
                   Logout
-                </CommonTypography>
-                <p className='navbar-item' onClick={navigateToProfile}>
+                </CommonButton>
+                <p className='navbar-item username' onClick={navigateToProfile}>
                   {currentUser?.username}
                 </p>
                 <Box className='navbar-profile-pic'>
@@ -156,6 +189,8 @@ export default function Navbar({ setSearchedData, setIsUpdated }) {
           </Box>
         </Toolbar>
       </AppBar>
+      {/* </HideOnScroll> */}
+      <Toolbar />
     </Box>
   );
 }
