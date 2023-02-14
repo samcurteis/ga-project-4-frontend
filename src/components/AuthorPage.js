@@ -54,11 +54,11 @@ export default function AuthorPage() {
       .catch(({ message, response }) => {
         console.error(message, response);
       });
+      setIsUpdated(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, isUpdated]);
 
   const toggleFavorite = () => {
-    console.log('toggle Favourite activated');
     const data = {
       ...singleAuthor,
       author: singleAuthor.id,
@@ -66,6 +66,7 @@ export default function AuthorPage() {
         ? singleAuthor.favorites.filter((i) => i !== currentUserId)
         : [...singleAuthor.favorites, currentUserId]
     };
+      console.log(data);
 
     API.PUT(API.ENDPOINTS.singleAuthor(id), data, API.getHeaders())
       .then(({ data }) => {
@@ -73,6 +74,7 @@ export default function AuthorPage() {
         setIsUpdated(true);
       })
       .catch((e) => console.log(e));
+      setIsUpdated(true);
   };
 
   const deleteAuthor = () =>
