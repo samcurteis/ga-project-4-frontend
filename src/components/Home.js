@@ -30,7 +30,6 @@ export default function Home() {
     API.GET(API.ENDPOINTS.singlePoem(Math.round(Math.random() * 15652)))
       .then(({ data }) => {
         setRandomPoem(data);
-        console.log(data);
       })
       .catch(({ message, response }) => {
         console.error(message, response);
@@ -43,7 +42,6 @@ export default function Home() {
     });
 
     API.GET(API.ENDPOINTS.popularPoems).then(({ data }) => {
-      console.log(data);
       const filterData = data.filter((i) => i.poem_favorites.length > 0);
       setPopularPoems(filterData);
     });
@@ -92,9 +90,13 @@ export default function Home() {
               id={randomPoem?.id}
               dangerouslySetInnerHTML={{ __html: title }}
             ></p>
-            <CommonTypography>{randomPoem?.author.name}</CommonTypography>
-            <CommonButton sx={{ padding: '20px' }} onClick={getRandomPoem}>
-              get random poem
+      <CommonTypography 
+      onClick={navigateToAuthor} 
+      id={randomPoem?.author.id} 
+      >{randomPoem?.author.name}
+      </CommonTypography>
+      <CommonButton sx={{ padding: '20px' }} onClick={getRandomPoem}>
+      get random poem
             </CommonButton>
           </Box>
         </Box>
