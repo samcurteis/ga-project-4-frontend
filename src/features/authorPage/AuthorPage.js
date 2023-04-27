@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { API } from '../lib/api';
-import { AUTH } from '../lib/auth';
+import { API } from '../../lib/api';
+import { AUTH } from '../../lib/auth';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
-import { useAuthenticated } from '../hooks/useAuthenticated';
-import { NOTIFY } from '../lib/notifications';
+import { useAuthenticated } from '../../hooks/useAuthenticated';
+import { NOTIFY } from '../../lib/notifications';
 
 import { Container, Box, Typography } from '@mui/material';
 import { IconContext } from 'react-icons';
 
-import CommonTypography from './common/CommonTypography';
-import CommonButton from './common/CommonButton';
+import CommonTypography from '../../components/common/CommonTypography';
+import CommonButton from '../../components/common/CommonButton';
 
 export default function AuthorPage() {
   const navigate = useNavigate();
