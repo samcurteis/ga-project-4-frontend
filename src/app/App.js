@@ -2,26 +2,26 @@ import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
-import Home from './components/Home';
-import Navbar from './components/NavBar';
-import Login from './components/Login';
-import Register from './components/Register';
-import SearchPage from './components/SearchPage';
-import AuthorPage from './components/AuthorPage';
-import PoemPage from './components/PoemPage';
-import UserPage from './components/UserPage';
-import PostPage from './components/PostPage';
-import NewPost from './components/NewPost';
-import NewPoem from './components/NewPoem';
-import Browse from './components/Browse';
+import Home from '../components/Home';
+import Navbar from '../components/NavBar';
+import Login from '../components/Login';
+import Register from '../components/Register';
+import SearchPage from '../components/SearchPage';
+import AuthorPage from '../components/AuthorPage';
+import PoemPage from '../components/PoemPage';
+import UserPage from '../components/UserPage';
+import PostPage from '../components/PostPage';
+import NewPost from '../components/NewPost';
+import NewPoem from '../components/NewPoem';
+import Browse from '../components/Browse';
 
 import './App.css';
-import './styles/pages.scss';
+import '../styles/pages.scss';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
-import Montserrat from './assets/fonts/Montserrat-VariableFont_wght.ttf';
+import Montserrat from '../assets/fonts/Montserrat-VariableFont_wght.ttf';
 
 import * as React from 'react';
 import CssBaseline from '@mui/material/CssBaseline';
