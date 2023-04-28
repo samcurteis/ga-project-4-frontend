@@ -49,12 +49,12 @@ export default function AuthorPage() {
     API.GET(API.ENDPOINTS.singleUser(currentUserId))
       .then(({ data }) => {
         setCurrentUser(data);
-        console.log('current user is', data);
       })
       .catch(({ message, response }) => {
         console.error(message, response);
       });
       setIsUpdated(false);
+      console.log('single author is', singleAuthor);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, isUpdated]);
 
@@ -66,11 +66,9 @@ export default function AuthorPage() {
         ? singleAuthor.favorites.filter((i) => i !== currentUserId)
         : [...singleAuthor.favorites, currentUserId]
     };
-      console.log(data);
 
     API.PUT(API.ENDPOINTS.singleAuthor(id), data, API.getHeaders())
       .then(({ data }) => {
-        console.log('from put', data);
         setIsUpdated(true);
       })
       .catch((e) => console.log(e));
@@ -85,11 +83,6 @@ export default function AuthorPage() {
         navigate(-1);
       })
       .catch((e) => console.log(e));
-
-  // useEffect(() => {
-
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [singleAuthor.favorites.length]);
 
   return (
     <Container className='Page'>
