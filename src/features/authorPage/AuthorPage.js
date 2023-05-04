@@ -12,16 +12,23 @@ import { IconContext } from 'react-icons';
 import CommonTypography from '../../components/common/CommonTypography';
 import CommonButton from '../../components/common/CommonButton';
 
+import { useDispatch, useSelector } from 'react-redux';
+import { loadCurrentAuthor, selectCurrentAuthor, isLoadingCurrentAuthor } from './authorPageSlice.js';
+
 export default function AuthorPage() {
   const navigate = useNavigate();
   const goBack = () => navigate(-1);
   const navigateToPoem = (e) => navigate(`/poems/${e.target.id}`);
   const { id } = useParams();
-  const [singleAuthor, setSingleAuthor] = useState(null);
+//  const [currentAuthor, setSingleAuthor] = useState(null);
   const currentUserId = AUTH.getPayload().sub;
   const [isUpdated, setIsUpdated] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
   const [isLoggedIn] = useAuthenticated();
+
+  const dispatch = useDispatch();
+  const currentAuthor = useSelector(selectCurrentAuthor)
+  const currentAuthorIsLoading = useSelector(isLoadingCurrentAuthor);
 
   function OrangeHeart() {
     return (
@@ -38,36 +45,32 @@ export default function AuthorPage() {
     );
   }
 
+
   useEffect(() => {
-    API.GET(API.ENDPOINTS.singleAuthor(id))
-      .then(({ data }) => {
-        setSingleAuthor(data);
-      })
-      .catch(({ message, response }) => {
-        console.error(message, response);
-      });
-    API.GET(API.ENDPOINTS.singleUser(currentUserId))
-      .then(({ data }) => {
-        setCurrentUser(data);
-      })
-      .catch(({ message, response }) => {
-        console.error(message, response);
-      });
+      dispatch(loadCurrentAuthor(id));
+
+//    API.GET(API.ENDPOINTS.currentUser(currentUserId))
+//      .then(({ data }) => {
+//    //    setCurrentUser(data);
+//      })
+//      .catch(({ message, response }) => {
+//    //    console.error(message, response);
+//      });
       setIsUpdated(false);
-      console.log('single author is', singleAuthor);
+      console.log('current author is', currentAuthor);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, isUpdated]);
+  }, [id, isUpdated, dispatch]);
 
   const toggleFavorite = () => {
     const data = {
-      ...singleAuthor,
-      author: singleAuthor.id,
-      favorites: singleAuthor.favorites.includes(currentUserId)
-        ? singleAuthor.favorites.filter((i) => i !== currentUserId)
-        : [...singleAuthor.favorites, currentUserId]
+      ...currentAuthor,
+      author: currentAuthor.id,
+      favorites: currentAuthor.favorites.includes(currentUserId)
+        ? currentAuthor.favorites.filter((i) => i !== currentUserId)
+        : [...currentAuthor.favorites, currentUserId]
     };
 
-    API.PUT(API.ENDPOINTS.singleAuthor(id), data, API.getHeaders())
+    API.PUT(API.ENDPOINTS.currentAuthor(id), data, API.getHeaders())
       .then(({ data }) => {
         setIsUpdated(true);
       })
@@ -76,13 +79,19 @@ export default function AuthorPage() {
   };
 
   const deleteAuthor = () =>
-    API.DELETE(API.ENDPOINTS.singleAuthor(id), API.getHeaders())
+    API.DELETE(API.ENDPOINTS.currentAuthor(id), API.getHeaders())
       .then(({ data }) => {
-        NOTIFY.SUCCESS(`${singleAuthor.name} deleted`);
+        NOTIFY.SUCCESS(`${currentAuthor.name} deleted`);
         console.log(data);
         navigate(-1);
       })
       .catch((e) => console.log(e));
+
+  if (currentAuthorIsLoading) {
+      return <h1>'Loading'</h1>
+    } else if (!currentAuthor) {
+        return null
+    }
 
   return (
     <Container className='Page'>
@@ -97,11 +106,11 @@ export default function AuthorPage() {
       <Typography
         sx={{ fontSize: '30px', marginTop: '10px', marginBottom: '15px' }}
       >
-        {singleAuthor?.name}
+        {currentAuthor?.name}
       </Typography>
       {isLoggedIn && (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          {singleAuthor?.favorites.includes(currentUserId) ? (
+          {currentAuthor?.favorites.includes(currentUserId) ? (
             <OrangeHeart />
           ) : (
             <AiOutlineHeart />
@@ -111,13 +120,13 @@ export default function AuthorPage() {
             onClick={toggleFavorite}
             name='post_favorites'
           >
-            {singleAuthor?.favorites.length}{' '}
-            {singleAuthor?.favorites.length === 1 ? 'favourite' : 'favourites'}
+            {currentAuthor?.favorites.length}{' '}
+            {currentAuthor?.favorites.length === 1 ? 'favourite' : 'favourites'}
           </CommonButton>
         </Box>
       )}
       <p>Poems</p>
-      {singleAuthor?.poems.map((poem) => (
+      {currentAuthor?.poems.map((poem) => (
         <CommonTypography
           className='poem-list'
           onClick={navigateToPoem}
