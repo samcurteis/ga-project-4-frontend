@@ -57,7 +57,6 @@ export default function PoemPage({ singlePoem, setSinglePoem }) {
   useEffect(() => {
     API.GET(API.ENDPOINTS.singlePoem(id))
       .then(({ data }) => {
-        console.log(data);
         setSinglePoem(data);
       })
       .catch(({ message, response }) => {
@@ -66,13 +65,12 @@ export default function PoemPage({ singlePoem, setSinglePoem }) {
     API.GET(API.ENDPOINTS.singleUser(currentUserId))
       .then(({ data }) => {
         setCurrentUser(data);
-        console.log('current user is', data);
       })
       .catch(({ message, response }) => {
         console.error(message, response);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, isUpdated, updateData]);
+  }, [id, isUpdated, ]);
 
   const toggleLike = () => {
     const data = {
@@ -99,21 +97,6 @@ export default function PoemPage({ singlePoem, setSinglePoem }) {
       : data.poem_favorites.push(currentUserId);
     setUpdateData(data);
   };
-
-  useEffect(() => {
-    API.PUT(
-      API.ENDPOINTS.singlePoem(id),
-      { ...singlePoem, ...updateData },
-      API.getHeaders()
-    )
-      .then(({ data }) => {
-        console.log(data);
-        setUpdateData(false);
-        setIsUpdated(true);
-      })
-      .catch((e) => console.log(e));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateData]);
 
   const deletePoem = () =>
     API.DELETE(API.ENDPOINTS.singlePoem(id), API.getHeaders())

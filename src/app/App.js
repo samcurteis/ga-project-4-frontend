@@ -9,7 +9,7 @@ import Register from '../components/Register';
 import SearchPage from '../components/SearchPage';
 import AuthorPage from '../features/authorPage/AuthorPage';
 import PoemPage from '../components/PoemPage';
-import UserPage from '../components/UserPage';
+import UserPage from '../features/userPage/UserPage';
 import PostPage from '../components/PostPage';
 import NewPost from '../components/NewPost';
 import NewPoem from '../components/NewPoem';

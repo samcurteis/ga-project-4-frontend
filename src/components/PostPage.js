@@ -113,21 +113,6 @@ export default function PostPage({ singlePost, setSinglePost }) {
     setUpdateData(data);
   };
 
-  useEffect(() => {
-    API.PUT(
-      API.ENDPOINTS.singlePost(id),
-      { ...singlePost, ...updateData },
-      API.getHeaders()
-    )
-      .then(({ data }) => {
-        console.log(data);
-        setUpdateData(false);
-        setIsUpdated(true);
-      })
-      .catch((e) => console.log(e));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateData]);
-
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
   };

@@ -14,6 +14,7 @@ import CommonButton from '../../components/common/CommonButton';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { loadCurrentAuthor, selectCurrentAuthor, isLoadingCurrentAuthor } from './authorPageSlice.js';
+import { loadCurrentUser, selectCurrentUser } from '../userPage/userPageSlice.js';
 
 export default function AuthorPage() {
   const navigate = useNavigate();
@@ -23,12 +24,13 @@ export default function AuthorPage() {
 //  const [currentAuthor, setSingleAuthor] = useState(null);
   const currentUserId = AUTH.getPayload().sub;
   const [isUpdated, setIsUpdated] = useState(false);
-  const [currentUser, setCurrentUser] = useState(null);
   const [isLoggedIn] = useAuthenticated();
 
   const dispatch = useDispatch();
   const currentAuthor = useSelector(selectCurrentAuthor)
   const currentAuthorIsLoading = useSelector(isLoadingCurrentAuthor);
+  
+  const currentUser = useSelector(selectCurrentUser)
 
   function OrangeHeart() {
     return (
@@ -48,18 +50,11 @@ export default function AuthorPage() {
 
   useEffect(() => {
       dispatch(loadCurrentAuthor(id));
+      dispatch(loadCurrentUser(currentUserId));
 
-//    API.GET(API.ENDPOINTS.currentUser(currentUserId))
-//      .then(({ data }) => {
-//    //    setCurrentUser(data);
-//      })
-//      .catch(({ message, response }) => {
-//    //    console.error(message, response);
-//      });
       setIsUpdated(false);
-      console.log('current author is', currentAuthor);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, isUpdated, dispatch]);
+  }, [dispatch]);
 
   const toggleFavorite = () => {
     const data = {
