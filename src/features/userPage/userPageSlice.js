@@ -43,7 +43,7 @@ export const currentUserSlice = createSlice({
 });
 
 export const selectCurrentUser = (state) => state.currentUser.user;
-export const isLoadingCurrentUser = (state) => state.currentAuthor.isLoadingCurrentAuthor;
+export const isLoadingCurrentUser = (state) => state.currentUser.isLoadingCurrentUser;
 
 export default currentUserSlice.reducer;
 

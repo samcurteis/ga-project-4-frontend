@@ -186,6 +186,8 @@ export default function PostPage({ singlePost, setSinglePost }) {
       )}
       {singlePost?.comments?.map((comment) => {
         return (
+            <>
+            <div></div>
           <CommentCard
             key={comment.id}
             text={comment.text}
@@ -196,6 +198,7 @@ export default function PostPage({ singlePost, setSinglePost }) {
             // currentUser={currentUser}
             setIsUpdated={setIsUpdated}
           />
+            </>
         );
       })}
       {isLoggedIn && (

@@ -36,13 +36,11 @@ export default function UserPage({ setSinglePost, setSinglePoem }) {
 
   useEffect(() => {
       dispatch(loadCurrentUser(id));
-  }, [id, dispatch]);
+  }, [dispatch]);
 
     if (currentUserIsLoading) {
-        console.log('currentUserIsLoading');
         return <h1>Loading</h1>
     } else if (!currentUser) {
-        console.log('no currentUser');
         return null
     }
 
@@ -108,7 +106,6 @@ export default function UserPage({ setSinglePost, setSinglePoem }) {
           >
             {currentUser?.posts.length === 0 ? <></> : <h2>Posts</h2>}
             {currentUser?.posts?.map((post) => (
-              <>
                 <p
                   className='userpage post-title'
                   onClick={navigateToPost}
@@ -117,7 +114,6 @@ export default function UserPage({ setSinglePost, setSinglePoem }) {
                 >
                   {post.title}
                 </p>
-              </>
             ))}
             {AUTH.isOwner(+id) && (
               <CommonButton
