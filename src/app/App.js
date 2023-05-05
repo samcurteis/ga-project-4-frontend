@@ -8,7 +8,7 @@ import Login from '../components/Login';
 import Register from '../components/Register';
 import SearchPage from '../components/SearchPage';
 import AuthorPage from '../features/authorPage/AuthorPage';
-import PoemPage from '../components/PoemPage';
+import PoemPage from '../features/poemPage/PoemPage';
 import UserPage from '../features/userPage/UserPage';
 import PostPage from '../components/PostPage';
 import NewPost from '../components/NewPost';
