@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { API } from '../../lib/api';
 import { AUTH } from '../../lib/auth';
@@ -12,17 +12,23 @@ import { HiOutlineThumbUp, HiThumbUp } from 'react-icons/hi';
 
 import { Container, Box } from '@mui/material';
 
-export default function PoemPage({ singlePoem, setSinglePoem }) {
+import { useDispatch, useSelector } from 'react-redux';
+import { loadCurrentPoem, selectCurrentPoem } from './poemPageSlice.js'
+
+import { loadCurrentUser, selectCurrentUser } from '../userPage/userPageSlice.js'
+
+export default function PoemPage({ setSinglePoem }) {
   const [isLoggedIn] = useAuthenticated();
   const navigate = useNavigate();
   const goBack = () => navigate(-1);
   const navigateToAuthor = (e) => navigate(`/authors/${e.target.id}`);
   const navigateToNewPoem = () => navigate(`/new-poem`);
   const { id } = useParams();
-  const [updateData, setUpdateData] = useState(false);
   const currentUserId = AUTH.getPayload().sub;
-  const [currentUser, setCurrentUser] = useState(null);
-  const [isUpdated, setIsUpdated] = useState(false);
+
+  const dispatch = useDispatch();
+  const singlePoem = useSelector(selectCurrentPoem);
+  const currentUser = useSelector(selectCurrentUser);
 
   function OrangeHeart() {
     return (
@@ -54,22 +60,10 @@ export default function PoemPage({ singlePoem, setSinglePoem }) {
   }
 
   useEffect(() => {
-    API.GET(API.ENDPOINTS.singlePoem(id))
-      .then(({ data }) => {
-        setSinglePoem(data);
-      })
-      .catch(({ message, response }) => {
-        console.error(message, response);
-      });
-    API.GET(API.ENDPOINTS.singleUser(currentUserId))
-      .then(({ data }) => {
-        setCurrentUser(data);
-      })
-      .catch(({ message, response }) => {
-        console.error(message, response);
-      });
+    dispatch(loadCurrentPoem(id));
+    dispatch(loadCurrentUser(currentUserId));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, isUpdated]);
+  }, [dispatch]);
 
   const addOrRemoveLikeOrFavorite = (data) => {
       API.PUT(
