@@ -86,7 +86,6 @@ export default function PoemPage({ singlePoem, setSinglePoem }) {
 
   const toggleLike = () => {
     const poemLikes = singlePoem.poem_likes
-
     const indexOfUser = poemLikes.indexOf(currentUserId);
     const poemLikesWithoutUser = [...poemLikes.slice(0, indexOfUser), ...poemLikes.slice(indexOfUser + 1)];
     const poemLikesWithUser = [...poemLikes, currentUserId]
@@ -104,16 +103,20 @@ export default function PoemPage({ singlePoem, setSinglePoem }) {
 };
 
   const toggleFavorite = () => {
-    const data = {
-      author: singlePoem.author.id,
-      poem_favorites: [...singlePoem.poem_favorites]
-    };
-    const index = data.poem_favorites.indexOf(currentUserId);
+    const poemFavorites = singlePoem.poem_favorites
+    const indexOfUser = poemFavorites.indexOf(currentUserId);
+    const poemFavoritesWithoutUser = [...poemFavorites.slice(0, indexOfUser), ...poemFavorites.slice(indexOfUser + 1)];
+    const poemFavoritesWithUser = [...poemFavorites, currentUserId]
 
-    singlePoem.poem_favorites.includes(currentUserId)
-      ? data.poem_favorites.splice(index, 1)
-      : data.poem_favorites.push(currentUserId);
-    setUpdateData(data);
+    const newPoemFavorites= singlePoem.poem_favorites.includes(currentUserId)
+      ? poemFavoritesWithoutUser
+      : poemFavoritesWithUser
+
+    const data = {
+        author: singlePoem.author.id,
+        poem_favorites: newPoemFavorites
+    }
+      addOrRemoveLikeOrFavorite(data);
   };
 
   const deletePoem = () =>
