@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { API } from '../../lib/api';
 import { AUTH } from '../../lib/auth';
-// import { useAuthenticated } from '../hooks/useAuthenticated';
 import CommonButton from '../../components/common/CommonButton';
 import CommonTypography from '../../components/common/CommonTypography';
 import { useAuthenticated } from '../../hooks/useAuthenticated';
@@ -70,18 +69,38 @@ export default function PoemPage({ singlePoem, setSinglePoem }) {
         console.error(message, response);
       });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, isUpdated, ]);
+  }, [id, isUpdated]);
+
+  const addOrRemoveLikeOrFavorite = (data) => {
+      API.PUT(
+      API.ENDPOINTS.singlePoem(id),
+      { ...singlePoem, ...data},
+      API.getHeaders()
+    )
+      .then(({ data }) => {
+          setSinglePoem({...singlePoem, poem_likes: data.poem_likes, poem_favorites: data.poem_favorites});
+      })
+      .catch((e) => console.log(e));
+  }
+
 
   const toggleLike = () => {
-    const data = {
-      author: singlePoem.author.id,
-      poem_likes: [...singlePoem.poem_likes]
-    };
-    const index = data.poem_likes.indexOf(currentUserId);
+    const poemLikes = singlePoem.poem_likes
 
-    singlePoem.poem_likes.includes(currentUserId)
-      ? data.poem_likes.splice(index, 1)
-      : data.poem_likes.push(currentUserId);
+    const indexOfUser = poemLikes.indexOf(currentUserId);
+    const poemLikesWithoutUser = [...poemLikes.slice(0, indexOfUser), ...poemLikes.slice(indexOfUser + 1)];
+    const poemLikesWithUser = [...poemLikes, currentUserId]
+
+    const newPoemLikes = singlePoem.poem_likes.includes(currentUserId)
+      ? poemLikesWithoutUser
+      : poemLikesWithUser
+
+    const data = {
+        author: singlePoem.author.id,
+        poem_likes: newPoemLikes     
+    }
+
+      addOrRemoveLikeOrFavorite(data);
 };
 
   const toggleFavorite = () => {
