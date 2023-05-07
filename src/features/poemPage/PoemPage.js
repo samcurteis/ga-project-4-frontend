@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { API } from '../../lib/api';
 import { AUTH } from '../../lib/auth';
 import CommonButton from '../../components/common/CommonButton';
 import CommonTypography from '../../components/common/CommonTypography';
@@ -13,7 +12,7 @@ import { HiOutlineThumbUp, HiThumbUp } from 'react-icons/hi';
 import { Container, Box } from '@mui/material';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { loadCurrentPoem, toggleLikeOrFavoriteForPoem, selectCurrentPoem } from './poemPageSlice.js'
+import { loadCurrentPoem, toggleLikeOrFavoriteForPoem, selectCurrentPoem, deleteCurrentPoem } from './poemPageSlice.js'
 
 import { loadCurrentUser, selectCurrentUser } from '../userPage/userPageSlice.js'
 
@@ -68,15 +67,6 @@ export default function PoemPage({ setSinglePoem }) {
   const addOrRemoveLikeOrFavorite = (data) => {
         const editedPoem = {...singlePoem, ...data}
       dispatch(toggleLikeOrFavoriteForPoem({id, editedPoem}));
-//      API.PUT(
-//      API.ENDPOINTS.singlePoem(id),
-//      { ...singlePoem, ...data},
-//      API.getHeaders()
-//    )
-//      .then(({ data }) => {
-//          setSinglePoem({...singlePoem, poem_likes: data.poem_likes, poem_favorites: data.poem_favorites});
-//      })
-//      .catch((e) => console.log(e));
   }
 
 
@@ -94,7 +84,6 @@ export default function PoemPage({ setSinglePoem }) {
         author: singlePoem.author.id,
         poem_likes: newPoemLikes     
     }
-
       addOrRemoveLikeOrFavorite(data);
 };
 
@@ -115,13 +104,11 @@ export default function PoemPage({ setSinglePoem }) {
       addOrRemoveLikeOrFavorite(data);
   };
 
-  const deletePoem = () =>
-    API.DELETE(API.ENDPOINTS.singlePoem(id), API.getHeaders())
-      .then(({ data }) => {
+  const deletePoem = () => {
+        dispatch(deleteCurrentPoem(id));
         NOTIFY.SUCCESS(`${singlePoem.title} deleted`);
         navigate(-1);
-      })
-      .catch((e) => console.log(e));
+  }
 
   const title = singlePoem?.title.split('\n').join('<br><br/>');
   const content = singlePoem?.content.split('\n').join('<br><br/>');

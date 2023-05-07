@@ -29,6 +29,18 @@ export const toggleLikeOrFavoriteForPoem = createAsyncThunk(
     }
 )
 
+export const deleteCurrentPoem = createAsyncThunk(
+    'currentPoem/deletePoem',
+    async (id) => {
+        try {
+            await API.DELETE(API.ENDPOINTS.singlePoem(id), API.getHeaders());
+        } catch (error) {
+            console.error(error.message, error.response);
+            throw(error);
+        }
+    }
+)
+
 export const currentPoemSlice = createSlice({
     name: 'currentPoem',
     initialState: {
@@ -57,6 +69,11 @@ export const currentPoemSlice = createSlice({
         state.isLoadingCurrentPoem = false;
         state.hasError = false;
         state.poem = {...state.poem, poem_likes: payload.poem_likes, poem_favorites: payload.poem_favorites};
+      })
+      .addCase(deleteCurrentPoem.fulfilled, (state) => {
+          state.isLoadingCurrentPoem = false;
+          state.hasError = false;
+          state.poem = {};
       })
   }
 });
