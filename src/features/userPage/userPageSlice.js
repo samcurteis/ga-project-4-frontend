@@ -8,7 +8,6 @@ export const loadCurrentUser = createAsyncThunk(
         try {
             const response = await API.GET(API.ENDPOINTS.singleUser(userId));
             const data = response.data;
-            console.log(data);
           return data;
       } catch(error) {
         console.error(error.message, error.response);

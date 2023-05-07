@@ -13,7 +13,7 @@ import { HiOutlineThumbUp, HiThumbUp } from 'react-icons/hi';
 import { Container, Box } from '@mui/material';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { loadCurrentPoem, selectCurrentPoem } from './poemPageSlice.js'
+import { loadCurrentPoem, toggleLikeOrFavoriteForPoem, selectCurrentPoem } from './poemPageSlice.js'
 
 import { loadCurrentUser, selectCurrentUser } from '../userPage/userPageSlice.js'
 
@@ -66,15 +66,17 @@ export default function PoemPage({ setSinglePoem }) {
   }, [dispatch]);
 
   const addOrRemoveLikeOrFavorite = (data) => {
-      API.PUT(
-      API.ENDPOINTS.singlePoem(id),
-      { ...singlePoem, ...data},
-      API.getHeaders()
-    )
-      .then(({ data }) => {
-          setSinglePoem({...singlePoem, poem_likes: data.poem_likes, poem_favorites: data.poem_favorites});
-      })
-      .catch((e) => console.log(e));
+        const editedPoem = {...singlePoem, ...data}
+      dispatch(toggleLikeOrFavoriteForPoem({id, editedPoem}));
+//      API.PUT(
+//      API.ENDPOINTS.singlePoem(id),
+//      { ...singlePoem, ...data},
+//      API.getHeaders()
+//    )
+//      .then(({ data }) => {
+//          setSinglePoem({...singlePoem, poem_likes: data.poem_likes, poem_favorites: data.poem_favorites});
+//      })
+//      .catch((e) => console.log(e));
   }
 
 
