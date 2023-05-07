@@ -15,6 +15,33 @@ export const loadCurrentAuthor = createAsyncThunk(
     }
 ); 
 
+export const toggleFavoriteForAuthor = createAsyncThunk(
+    'currentAuthor/toggleFavoriteForAuthor',
+    async ({id, editedAuthor}) => {
+        try {
+            const response = await API.PUT(API.ENDPOINTS.singleAuthor(id), editedAuthor, API.getHeaders());
+            const data = response.data;
+            return data;
+            } catch (error) {
+                console.error(error.message, error.response);
+                throw(error);
+            }
+    }
+)
+
+export const deleteCurrentAuthor = createAsyncThunk(
+    'currentAuthor/deleteAuthor',
+    async (id) => {
+        try {
+            await API.DELETE(API.ENDPOINTS.singleAuthor(id), API.getHeaders());
+        } catch (error) {
+            console.error(error.message, error.response);
+            throw(error);
+        }
+    }
+)
+
+
 export const currentAuthorSlice = createSlice({
     name: 'currentAuthor',
     initialState: {
@@ -38,10 +65,28 @@ export const currentAuthorSlice = createSlice({
         state.hasError = true;
         state.author = {};
       })
+      .addCase(toggleFavoriteForAuthor.fulfilled, (state, action) => {
+          const payload = action.payload;
+        state.isLoadingCurrentAuthor = false;
+        state.hasError = false;
+        state.author = {...state.author, favorites: payload.favorites};
+      })
+      .addCase(deleteCurrentAuthor.fulfilled, (state) => {
+          state.isLoadingCurrentAuthor = false;
+          state.hasError = false;
+          state.author = {};
+      })
+      .addCase(deleteCurrentAuthor.rejected, (state) => {
+          state.isLoadingCurrentAuthor = false;
+          state.hasError = true;
+      })
+
+
   }
 });
 
 export const selectCurrentAuthor = (state) => state.currentAuthor.author;
 export const isLoadingCurrentAuthor = (state) => state.currentAuthor.isLoadingCurrentAuthor;
+export const currentAuthorHasError = (state) => state.currentAuthor.hasError;
 
 export default currentAuthorSlice.reducer;

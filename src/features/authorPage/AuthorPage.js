@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { API } from '../../lib/api';
 import { AUTH } from '../../lib/auth';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 import { useAuthenticated } from '../../hooks/useAuthenticated';
-import { NOTIFY } from '../../lib/notifications';
 
 import { Container, Box, Typography } from '@mui/material';
 import { IconContext } from 'react-icons';
@@ -13,23 +12,19 @@ import CommonTypography from '../../components/common/CommonTypography';
 import CommonButton from '../../components/common/CommonButton';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { loadCurrentAuthor, selectCurrentAuthor, isLoadingCurrentAuthor } from './authorPageSlice.js';
+import { loadCurrentAuthor, selectCurrentAuthor, toggleFavoriteForAuthor, deleteCurrentAuthor } from './authorPageSlice.js';
 import { loadCurrentUser, selectCurrentUser } from '../userPage/userPageSlice.js';
 
 export default function AuthorPage() {
   const navigate = useNavigate();
+  const [isLoggedIn] = useAuthenticated();
+  const { id } = useParams();
+  const currentUserId = AUTH.getPayload().sub;
   const goBack = () => navigate(-1);
   const navigateToPoem = (e) => navigate(`/poems/${e.target.id}`);
-  const { id } = useParams();
-//  const [currentAuthor, setSingleAuthor] = useState(null);
-  const currentUserId = AUTH.getPayload().sub;
-  const [isUpdated, setIsUpdated] = useState(false);
-  const [isLoggedIn] = useAuthenticated();
 
   const dispatch = useDispatch();
   const currentAuthor = useSelector(selectCurrentAuthor)
-  const currentAuthorIsLoading = useSelector(isLoadingCurrentAuthor);
-  
   const currentUser = useSelector(selectCurrentUser)
 
   function OrangeHeart() {
@@ -51,42 +46,25 @@ export default function AuthorPage() {
   useEffect(() => {
       dispatch(loadCurrentAuthor(id));
       dispatch(loadCurrentUser(currentUserId));
-
-      setIsUpdated(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
   const toggleFavorite = () => {
-    const data = {
+    const editedAuthor = {
       ...currentAuthor,
       author: currentAuthor.id,
       favorites: currentAuthor.favorites.includes(currentUserId)
         ? currentAuthor.favorites.filter((i) => i !== currentUserId)
         : [...currentAuthor.favorites, currentUserId]
     };
-
-    API.PUT(API.ENDPOINTS.currentAuthor(id), data, API.getHeaders())
-      .then(({ data }) => {
-        setIsUpdated(true);
-      })
-      .catch((e) => console.log(e));
-      setIsUpdated(true);
+    dispatch(toggleFavoriteForAuthor({id, editedAuthor}))
   };
 
-  const deleteAuthor = () =>
+  const deleteAuthor = () => {
+    dispatch(deleteCurrentAuthor(id));
     API.DELETE(API.ENDPOINTS.currentAuthor(id), API.getHeaders())
-      .then(({ data }) => {
-        NOTIFY.SUCCESS(`${currentAuthor.name} deleted`);
-        console.log(data);
         navigate(-1);
-      })
-      .catch((e) => console.log(e));
-
-  if (currentAuthorIsLoading) {
-      return <h1>'Loading'</h1>
-    } else if (!currentAuthor) {
-        return null
-    }
+  }
 
   return (
     <Container className='Page'>
