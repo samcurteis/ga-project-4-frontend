@@ -13,8 +13,11 @@ import CommentCard from '../../components/common/CommentCard';
 import CommonButton from '../../components/common/CommonButton';
 import { useAuthenticated } from '../../hooks/useAuthenticated';
 
-export default function PostPage({ singlePost, setSinglePost }) {
-  // const [isLoggedIn] = useAuthenticated();
+import { useDispatch, useSelector } from 'react-redux';
+import { loadCurrentPost, toggleLikeOrFavoriteForPost, selectCurrentPost, deleteCurrentPost } from './postPageSlice.js'
+import { selectCurrentUser } from '../userPage/userPageSlice.js'
+
+export default function PostPage() {
   const navigate = useNavigate();
   const goBack = () => navigate(-1);
   const navigateToUser = (e) => navigate(`/users/${e.target.id}`);
@@ -22,7 +25,6 @@ export default function PostPage({ singlePost, setSinglePost }) {
   const [isLoggedIn] = useAuthenticated();
   const { id } = useParams();
 
-  // const [currentUser, setCurrentUser] = useState(null);
   const [isUpdated, setIsUpdated] = useState(false);
   const initialData = {
     text: '',
@@ -31,6 +33,10 @@ export default function PostPage({ singlePost, setSinglePost }) {
   const [data, setData] = useState(initialData);
   const [updateData, setUpdateData] = useState(false);
   const currentUserId = AUTH.getPayload().sub;
+
+  const dispatch = useDispatch();
+  const singlePost = useSelector(selectCurrentPost);
+  const currentUser = useSelector(selectCurrentUser);
 
   function OrangeHeart() {
     return (
@@ -62,15 +68,7 @@ export default function PostPage({ singlePost, setSinglePost }) {
   }
 
   useEffect(() => {
-    API.GET(API.ENDPOINTS.singlePost(id))
-      .then(({ data }) => {
-        console.log(data);
-        setSinglePost(data);
-      })
-      .catch(({ message, response }) => {
-        console.error(message, response);
-      });
-    setIsUpdated(false);
+    dispatch(loadCurrentPost(id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, isUpdated]);
 
