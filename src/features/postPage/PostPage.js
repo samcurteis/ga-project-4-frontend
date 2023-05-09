@@ -1,17 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { API } from '../lib/api';
-import { AUTH } from '../lib/auth';
-import { NOTIFY } from '../lib/notifications';
+import { API } from '../../lib/api';
+import { AUTH } from '../../lib/auth';
+import { NOTIFY } from '../../lib/notifications';
 import { IconContext } from 'react-icons';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 import { HiOutlineThumbUp, HiThumbUp } from 'react-icons/hi';
 
 import { Container, Box, TextareaAutosize, Typography } from '@mui/material';
 
-import CommentCard from './common/CommentCard';
-import CommonButton from './common/CommonButton';
-import { useAuthenticated } from '../hooks/useAuthenticated';
+import CommentCard from '../../components/common/CommentCard';
+import CommonButton from '../../components/common/CommonButton';
+import { useAuthenticated } from '../../hooks/useAuthenticated';
 
 export default function PostPage({ singlePost, setSinglePost }) {
   // const [isLoggedIn] = useAuthenticated();

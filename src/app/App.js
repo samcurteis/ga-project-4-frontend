@@ -10,7 +10,7 @@ import SearchPage from '../components/SearchPage';
 import AuthorPage from '../features/authorPage/AuthorPage';
 import PoemPage from '../features/poemPage/PoemPage';
 import UserPage from '../features/userPage/UserPage';
-import PostPage from '../components/PostPage';
+import PostPage from '../features/postPage/PostPage';
 import NewPost from '../components/NewPost';
 import NewPoem from '../components/NewPoem';
 import Browse from '../components/Browse';
