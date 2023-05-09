@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { API } from '../../lib/api.js'
+import { NOTIFY } from '../../lib/notifications';
 
 
 export const loadCurrentPoem = createAsyncThunk(
@@ -71,6 +72,7 @@ export const currentPoemSlice = createSlice({
         state.poem = {...state.poem, poem_likes: payload.poem_likes, poem_favorites: payload.poem_favorites};
       })
       .addCase(deleteCurrentPoem.fulfilled, (state) => {
+        NOTIFY.SUCCESS(`${state.currentPoem.title} deleted`);
           state.isLoadingCurrentPoem = false;
           state.hasError = false;
           state.poem = {};

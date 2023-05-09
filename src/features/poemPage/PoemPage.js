@@ -4,7 +4,6 @@ import { AUTH } from '../../lib/auth';
 import CommonButton from '../../components/common/CommonButton';
 import CommonTypography from '../../components/common/CommonTypography';
 import { useAuthenticated } from '../../hooks/useAuthenticated';
-import { NOTIFY } from '../../lib/notifications';
 import { IconContext } from 'react-icons';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 import { HiOutlineThumbUp, HiThumbUp } from 'react-icons/hi';
@@ -106,7 +105,6 @@ export default function PoemPage({ setSinglePoem }) {
 
   const deletePoem = () => {
         dispatch(deleteCurrentPoem(id));
-        NOTIFY.SUCCESS(`${singlePoem.title} deleted`);
         navigate(-1);
   }
 
