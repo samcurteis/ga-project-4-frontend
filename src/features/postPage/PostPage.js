@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { API } from '../lib/api';
-import { AUTH } from '../lib/auth';
-import { NOTIFY } from '../lib/notifications';
+import { API } from '../../lib/api';
+import { AUTH } from '../../lib/auth';
+import { NOTIFY } from '../../lib/notifications';
 import { IconContext } from 'react-icons';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 import { HiOutlineThumbUp, HiThumbUp } from 'react-icons/hi';
 
 import { Container, Box, TextareaAutosize, Typography } from '@mui/material';
 
-import CommentCard from './common/CommentCard';
-import CommonButton from './common/CommonButton';
-import { useAuthenticated } from '../hooks/useAuthenticated';
+import CommentCard from '../../components/common/CommentCard';
+import CommonButton from '../../components/common/CommonButton';
+import { useAuthenticated } from '../../hooks/useAuthenticated';
 
-export default function PostPage({ singlePost, setSinglePost }) {
-  // const [isLoggedIn] = useAuthenticated();
+import { useDispatch, useSelector } from 'react-redux';
+import { loadCurrentPost, selectCurrentPost } from './postPageSlice.js'
+
+export default function PostPage() {
   const navigate = useNavigate();
   const goBack = () => navigate(-1);
   const navigateToUser = (e) => navigate(`/users/${e.target.id}`);
@@ -22,15 +24,16 @@ export default function PostPage({ singlePost, setSinglePost }) {
   const [isLoggedIn] = useAuthenticated();
   const { id } = useParams();
 
-  // const [currentUser, setCurrentUser] = useState(null);
   const [isUpdated, setIsUpdated] = useState(false);
   const initialData = {
     text: '',
     post: id
   };
   const [data, setData] = useState(initialData);
-  const [updateData, setUpdateData] = useState(false);
   const currentUserId = AUTH.getPayload().sub;
+
+  const dispatch = useDispatch();
+  const singlePost = useSelector(selectCurrentPost);
 
   function OrangeHeart() {
     return (
@@ -62,15 +65,7 @@ export default function PostPage({ singlePost, setSinglePost }) {
   }
 
   useEffect(() => {
-    API.GET(API.ENDPOINTS.singlePost(id))
-      .then(({ data }) => {
-        console.log(data);
-        setSinglePost(data);
-      })
-      .catch(({ message, response }) => {
-        console.error(message, response);
-      });
-    setIsUpdated(false);
+    dispatch(loadCurrentPost(id));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, isUpdated]);
 
@@ -97,7 +92,6 @@ export default function PostPage({ singlePost, setSinglePost }) {
     singlePost.post_likes.includes(currentUserId)
       ? data.post_likes.splice(index, 1)
       : data.post_likes.push(currentUserId);
-    setUpdateData(data);
   };
 
   const toggleFavorite = () => {
@@ -110,23 +104,7 @@ export default function PostPage({ singlePost, setSinglePost }) {
     singlePost.post_favorites.includes(currentUserId)
       ? data.post_favorites.splice(index, 1)
       : data.post_favorites.push(currentUserId);
-    setUpdateData(data);
   };
-
-  useEffect(() => {
-    API.PUT(
-      API.ENDPOINTS.singlePost(id),
-      { ...singlePost, ...updateData },
-      API.getHeaders()
-    )
-      .then(({ data }) => {
-        console.log(data);
-        setUpdateData(false);
-        setIsUpdated(true);
-      })
-      .catch((e) => console.log(e));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [updateData]);
 
   const handleChange = (e) => {
     setData({ ...data, [e.target.name]: e.target.value });
@@ -201,6 +179,8 @@ export default function PostPage({ singlePost, setSinglePost }) {
       )}
       {singlePost?.comments?.map((comment) => {
         return (
+            <>
+            <div></div>
           <CommentCard
             key={comment.id}
             text={comment.text}
@@ -211,6 +191,7 @@ export default function PostPage({ singlePost, setSinglePost }) {
             // currentUser={currentUser}
             setIsUpdated={setIsUpdated}
           />
+            </>
         );
       })}
       {isLoggedIn && (
