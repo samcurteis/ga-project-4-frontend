@@ -14,8 +14,7 @@ import CommonButton from '../../components/common/CommonButton';
 import { useAuthenticated } from '../../hooks/useAuthenticated';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { loadCurrentPost, toggleLikeOrFavoriteForPost, selectCurrentPost, deleteCurrentPost } from './postPageSlice.js'
-import { selectCurrentUser } from '../userPage/userPageSlice.js'
+import { loadCurrentPost, selectCurrentPost } from './postPageSlice.js'
 
 export default function PostPage() {
   const navigate = useNavigate();
@@ -31,12 +30,10 @@ export default function PostPage() {
     post: id
   };
   const [data, setData] = useState(initialData);
-  const [updateData, setUpdateData] = useState(false);
   const currentUserId = AUTH.getPayload().sub;
 
   const dispatch = useDispatch();
   const singlePost = useSelector(selectCurrentPost);
-  const currentUser = useSelector(selectCurrentUser);
 
   function OrangeHeart() {
     return (
@@ -95,7 +92,6 @@ export default function PostPage() {
     singlePost.post_likes.includes(currentUserId)
       ? data.post_likes.splice(index, 1)
       : data.post_likes.push(currentUserId);
-    setUpdateData(data);
   };
 
   const toggleFavorite = () => {
@@ -108,7 +104,6 @@ export default function PostPage() {
     singlePost.post_favorites.includes(currentUserId)
       ? data.post_favorites.splice(index, 1)
       : data.post_favorites.push(currentUserId);
-    setUpdateData(data);
   };
 
   const handleChange = (e) => {
