@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { API } from '../../lib/api';
 import { AUTH } from '../../lib/auth';
 import { AiOutlineHeart, AiFillHeart } from 'react-icons/ai';
 import { useAuthenticated } from '../../hooks/useAuthenticated';
@@ -49,7 +48,7 @@ export default function AuthorPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
-  const toggleFavorite = () => {
+   const toggleFavorite = (currentAuthor, currentUserId) => {
     const editedAuthor = {
       ...currentAuthor,
       author: currentAuthor.id,
@@ -57,12 +56,17 @@ export default function AuthorPage() {
         ? currentAuthor.favorites.filter((i) => i !== currentUserId)
         : [...currentAuthor.favorites, currentUserId]
     };
-    dispatch(toggleFavoriteForAuthor({id, editedAuthor}))
+      return editedAuthor;
   };
+
+  const editAuthor = () => {
+      const editedAuthor = toggleFavorite(currentAuthor, currentUserId);
+    dispatch(toggleFavoriteForAuthor({id, editedAuthor}))
+  }
+
 
   const deleteAuthor = () => {
     dispatch(deleteCurrentAuthor(id));
-    API.DELETE(API.ENDPOINTS.currentAuthor(id), API.getHeaders())
         navigate(-1);
   }
 
@@ -90,7 +94,7 @@ export default function AuthorPage() {
           )}
           <CommonButton
             sx={{ padding: '10px' }}
-            onClick={toggleFavorite}
+            onClick={editAuthor}
             name='post_favorites'
           >
             {currentAuthor?.favorites.length}{' '}
@@ -112,3 +116,4 @@ export default function AuthorPage() {
     </Container>
   );
 }
+
