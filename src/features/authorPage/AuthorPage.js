@@ -83,7 +83,7 @@ export default function AuthorPage() {
       <Typography
         sx={{ fontSize: '30px', marginTop: '10px', marginBottom: '15px' }}
       >
-        {currentAuthor?.name}
+      {currentAuthor?.name}
       </Typography>
       {isLoggedIn && (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
