@@ -7,8 +7,6 @@ export const loadCurrentAuthor = createAsyncThunk(
        async (authorId) => {
         try {
             const response = await API.GET(API.ENDPOINTS.singleAuthor(authorId));
-            console.log(response)
-            console.log('hello')
             const data = await response.data;
           return data;
       } catch(error) {

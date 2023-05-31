@@ -1,5 +1,5 @@
 import React from 'react'
-import {render} from '@testing-library/react'
+import {render, waitFor} from '@testing-library/react'
 import {BrowserRouter} from 'react-router-dom'
 import { Provider } from 'react-redux';
 import { setupStore } from './app/store.js'
@@ -30,3 +30,7 @@ export function renderWithProviders(
 export * from '@testing-library/react'
 
 export {renderWithProviders as render}
+
+export const waitForNeverToHappen = async (callable) => {
+    await expect(waitFor(callable)).rejects.toEqual(expect.anything())
+}

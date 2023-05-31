@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useAuthenticated } from '../../hooks/useAuthenticated';
 import axios from 'axios'
 
 
 export default function TestComponent() {
+  const [isLoggedIn] = useAuthenticated();
     const [ currentAuthor, setCurrentAuthor ] = useState(null)
 
     async function getCurrentAuthor() {
@@ -24,7 +26,11 @@ export default function TestComponent() {
   }, []);
 
   return (
+      <div>
+      {isLoggedIn && ( 
       <p>{currentAuthor?.name}</p>
+      )}
+      </div>
   );
 }
 
