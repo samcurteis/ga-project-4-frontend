@@ -96,6 +96,7 @@ export default function AuthorPage() {
             sx={{ padding: '10px' }}
             onClick={editAuthor}
             name='post_favorites'
+            aria-label='favorites'
           >
             {currentAuthor?.favorites.length}{' '}
             {currentAuthor?.favorites.length === 1 ? 'favourite' : 'favourites'}
