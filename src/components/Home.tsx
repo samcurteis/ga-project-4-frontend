@@ -7,21 +7,46 @@ import CommonButton from './common/CommonButton';
 import CommonTypography from './common/CommonTypography';
 import ProfilePicture from './common/ProfilePicture';
 
+import { MouseEvent } from 'react';
+
 export default function Home() {
+
+  interface popularAuthors {
+    favorites: number[]
+  }
+
+  interface popularPoems {
+    poem_favorites: number[]
+  }
+
+  interface popularPosts {
+    post_favorites: number[]
+  }
+
+  interface Poem {
+    title: string,
+    author: {
+      name: string,
+      id: string
+    }
+    id: string
+  }
+
+
   // const [poems, setPoems] = useState(null);
-  const [randomPoem, setRandomPoem] = useState(null);
+  const [randomPoem, setRandomPoem] = useState<Poem | null>(null);
   // const [posts, setPosts] = useState(null);
-  const [popularAuthors, setPopularAuthors] = useState(null);
-  const [popularPoems, setPopularPoems] = useState(null);
-  const [popularPosts, setPopularPosts] = useState(null);
+  const [popularAuthors, setPopularAuthors] = useState<popularAuthors[] | null>(null);
+  const [popularPoems, setPopularPoems] = useState<popularPoems[] | null>(null);
+  const [popularPosts, setPopularPosts] = useState<popularPosts[] | null>(null);
   const [recentPosts, setRecentPosts] = useState(null);
   // const [users, setUsers] = useState(null);
   const [isUpdated, setIsUpdated] = useState(true);
   const navigate = useNavigate();
-  const navigateToAuthor = (e) => navigate(`/authors/${e.target.id}`);
-  const navigateToUser = (e) => navigate(`/users/${e.target.id}`);
-  const navigateToPoem = (e) => navigate(`/poems/${e.target.id}`);
-  const navigateToPost = (e) => navigate(`/posts/${e.target.id}`);
+  const navigateToAuthor = (e: React.MouseEvent<HTMLTextAreaElement>): void => navigate(`/authors/${e.currentTarget.id}`);
+  const navigateToUser = (e: React.MouseEvent<HTMLTextAreaElement>): void => navigate(`/users/${e.currentTarget.id}`);
+  const navigateToPoem = (e: React.MouseEvent<HTMLParagraphElement>): void => navigate(`/poems/${e.currentTarget.id}`);
+  const navigateToPost = (e: React.MouseEvent<HTMLTextAreaElement>) => navigate(`/posts/${e.currentTarget.id}`);
   // const goBack = () => navigate(-1);
 
   const getRandomPoem = () => setIsUpdated(true);
@@ -36,19 +61,29 @@ export default function Home() {
       });
     setIsUpdated(false);
 
+
     API.GET(API.ENDPOINTS.popularAuthors).then(({ data }) => {
-      const filterData = data.filter((i) => i.favorites.length > 0);
-      setPopularAuthors(filterData);
+      const filterData = (data: popularAuthors[]): popularAuthors[] => {
+        return data.filter((i: popularAuthors) => i.favorites.length > 0);
+      }
+      const filteredData = filterData(data)
+      setPopularAuthors(filteredData);
     });
 
     API.GET(API.ENDPOINTS.popularPoems).then(({ data }) => {
-      const filterData = data.filter((i) => i.poem_favorites.length > 0);
-      setPopularPoems(filterData);
+      const filterData = (data: popularPoems[]): popularPoems[] => {
+        return data.filter((i) => i.poem_favorites.length > 0);
+      }
+      const filteredData = filterData(data)
+      setPopularPoems(filteredData);
     });
 
     API.GET(API.ENDPOINTS.allPosts).then(({ data }) => {
-      const filterData = data.filter((i) => i.post_favorites.length > 0);
-      setPopularPosts(filterData);
+      const filterData = (data: popularPosts[]): popularPosts[] => {
+        return data.filter((i) => i.post_favorites.length > 0);
+      }
+      const filteredData = filterData(data)
+      setPopularPosts(filteredData);
     });
 
     API.GET(API.ENDPOINTS.recentPosts).then(({ data }) => {
@@ -57,6 +92,12 @@ export default function Home() {
   }, [isUpdated]);
 
   const title = randomPoem?.title.split('\n').join('<br><br/>');
+
+  interface CommonTypographyProps {
+    onClick?: (event: MouseEvent<HTMLDivElement>) => void;
+    id?: string;
+    // You can add more prop types as needed
+  }
 
   return (
     <section className='home Page'>
@@ -80,7 +121,7 @@ export default function Home() {
           width: '70vw'
         }}
       >
-        <Box name='random-poem'>
+        <Box className='random-poem'>
           <h2>Random poem</h2>
           <Box sx={{ paddingLeft: '20px' }}>
             <p
@@ -88,20 +129,18 @@ export default function Home() {
               onClick={navigateToPoem}
               key={randomPoem?.id}
               id={randomPoem?.id}
-              dangerouslySetInnerHTML={{ __html: title }}
-            ></p>
-      <CommonTypography 
-      onClick={navigateToAuthor} 
-      id={randomPoem?.author.id} 
-      >{randomPoem?.author.name}
-      </CommonTypography>
-      <CommonButton sx={{ padding: '20px' }} onClick={getRandomPoem}>
-      get random poem
+            >{randomPoem?.title}</p>
+            <CommonTypography
+              onClick={navigateToAuthor}
+              id={randomPoem?.author.id}
+            >{randomPoem?.author.name}
+            </CommonTypography>
+            <CommonButton sx={{ padding: '20px' }} onClick={getRandomPoem}>
+              get random poem
             </CommonButton>
           </Box>
         </Box>
         <Box
-          name='recent-posts'
           sx={{
             display: 'flex',
             flexDirection: 'column',

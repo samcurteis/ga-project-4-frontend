@@ -25,3 +25,6 @@ yarn-error.log*
 
 # Local Netlify folder
 .netlify
+
+src/components/TestComponent.ts
+src/__tests__/TestComponent.test.js

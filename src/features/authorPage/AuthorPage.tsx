@@ -8,19 +8,19 @@ import { Container, Box, Typography } from '@mui/material';
 import { IconContext } from 'react-icons';
 
 import CommonTypography from '../../components/common/CommonTypography';
-import CommonButton from '../../components/common/CommonButton';
+import CommonButton from '../../components/common/CommonButton.js';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { loadCurrentAuthor, selectCurrentAuthor, toggleFavoriteForAuthor, deleteCurrentAuthor } from './authorPageSlice.js';
 import { loadCurrentUser, selectCurrentUser } from '../userPage/userPageSlice.js';
 
-export default function AuthorPage() {
+const AuthorPage: React.FC = () => {
   const navigate = useNavigate();
   const [isLoggedIn] = useAuthenticated();
   const { id } = useParams();
   const currentUserId = AUTH.getPayload().sub;
   const goBack = () => navigate(-1);
-  const navigateToPoem = (e) => navigate(`/poems/${e.target.id}`);
+  const navigateToPoem = (e: React.ChangeEvent<HTMLInputElement>) => navigate(`/poems/${e.target.id}`);
 
   const dispatch = useDispatch();
   const currentAuthor = useSelector(selectCurrentAuthor)
@@ -41,6 +41,14 @@ export default function AuthorPage() {
     );
   }
 
+  type currentAuthorTypes = {
+      id: number,
+      name: string,
+      favorites: number[],
+      poems: number[],
+      is_staff: boolean
+  }
+
 
   useEffect(() => {
       dispatch(loadCurrentAuthor(id));
@@ -48,7 +56,7 @@ export default function AuthorPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch]);
 
-   const toggleFavorite = (currentAuthor, currentUserId) => {
+   const toggleFavorite = (currentAuthor: currentAuthorTypes, currentUserId: number) => {
     const editedAuthor = {
       ...currentAuthor,
       author: currentAuthor.id,
@@ -68,6 +76,17 @@ export default function AuthorPage() {
   const deleteAuthor = () => {
     dispatch(deleteCurrentAuthor(id));
         navigate(-1);
+  }
+
+  type CommonButtonProps = {
+      children: any,
+      onClick: () => void
+  }
+
+  const CommonButton: React.FC<CommonButtonProps> = ({children, onClick }) => {
+    return (
+    <CommonButton onClick={onClick}>{children}</CommonButton>
+      )
   }
 
   return (
@@ -118,3 +137,4 @@ export default function AuthorPage() {
   );
 }
 
+export default AuthorPage
