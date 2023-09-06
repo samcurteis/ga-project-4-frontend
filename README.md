@@ -133,7 +133,7 @@ I was able to get the backend up and running fairly quickly and began working on
 
 After completing the search page I realised that users could only find content if they knew what to search for, and there was no way for users to discover authors or poems that they didn’t know about. I had created index pages before but none that handled such large amounts of data, so I had to find a way of splitting the data into smaller chunks that could be easier to surf.
 
- I decided to arrange them into alphabetical categories, but whereas before I might have used a filter function on the frontend to achieve this, I realised that would not be ideal in this circumstance as it would mean calling all of the data at once, which slowed down the speed of the app significantly. To resolve this issue I thought I would see if there’d be a way of doing the same thing in the backend, and came across Django’s `startswith` filter option, as well as ‘Q’, which allowed me to exclude ‘the’ at the beginning of poems which would overpopulate the ‘T’ category.
+ I decided to arrange them into alphabetical categories, but whereas before I might have used a filter function on the frontend to achieve this, I realised that would not be ideal in this circumstance as it would mean calling all of the data at once, which slowed down the speed of the app significantly. To resolve this issue I thought I would see if there’d be a way of doing the same thing in the backend, and came across Django’s `startswith` filter option, as well as `Q`, which allowed me to exclude ‘The’ at the beginning of poems which would overpopulate the ‘T’ category.
 
  ```.py
  class PoemIndexSearchView(APIView):
@@ -151,7 +151,7 @@ By filtering through the data on the backend, I again managed to ensure that the
 
 As mentioned in the planning section, I wanted to make sure that the app not only worked well but also looked good. To decide on my theme I first explored some colour palette websites to help me decide which colours I wanted for the website. 
 
-I really liked the design of the Poetry Foundation’s website in the way that it mimicked the simple black and white of a poetry book, while still keeping it bright with dashes of red across the site. I took inspiration from this while keeping my app unique by going for a black-and-white design, with an orange logo and orange text when a user hovers over a link. I also opted for two fonts, one serif and one sans-serif so the site had a sense of being literary but also modern.
+I really liked the design of the [Poetry Foundation](https://www.poetryfoundation.org/)’s website in the way that it mimicked the simple black and white of a poetry book, while still keeping it bright with dashes of red across the site. I took inspiration from this while keeping my app unique by going for a black-and-white design, with an orange logo and orange text when a user hovers over a link. I also opted for two fonts, one serif and one sans-serif so the site had a sense of being literary but also modern.
 
 In the initial building of components, to get something looking fairly decent while still focussing on functionality, I used Material UI. I separated the fonts by applying one to standard HTML components through CSS, and one to MUI components so that I could interchange them easily.
 
@@ -159,7 +159,7 @@ When I got to the point of customising the design of my app, however, the docume
 
 Through some experimentation however, I found a way of applying global styles within the custom component, as well as having the option of passing in styles where I call the component so that I can modify them where necessary. I did this by setting the `sx` prop as an array which includes both the passed-in styles as well as the globally set styles. This worked perfectly as a means of creating buttons and typography that would show my choice of orange when the user hovers over the text, indicating that it is a link which they can click on, creating consistency of style across the platform.
 
-```
+```*.js
 import React from 'react';
      import { Typography } from '@mui/material';
     
@@ -200,7 +200,7 @@ Once I had formatted each page, mostly using flexbox through CSS and inline MUI 
 
 One of these stretch goals was giving admin users the ability to apply CRUD functionality to the poetry and author database. A lot of poems included unwanted footnotes, inactive links to audio files or unnecessary spacing, and it was rather tedious editing the seed file and reseeding or modifying them through Postman. I had already created a new post page, which doubled as an edit page, passing in the post to edit as the initial value of the form data, or removing the post to edit if the user clicked on the ‘write a new post’ button instead of an ‘edit post’ button. If a post to edit is passed into the component, it will then run a put request when the user clicks submit, or a post request if there isn’t.
 
-```
+```*.js
 export default function NewPostPage({ singlePost }) {
        const navigate = useNavigate();
        const goBack = () => navigate(-1);
@@ -240,7 +240,7 @@ For the new poem/ edit poem component I therefore implemented the same idea, but
 I did this by setting up a variable ‘foundAuthor’ within an MUI dropdown menu that would be populated by an array of all authors. This variable would search the authors array for the value input by the user.
 
 I then used a ternary operator to set the form data as either the id of the found author, or the new value input by the user if no author was found. 
-``` 
+``` *.js
 <Autocomplete
         sx={{ mb: 2 }}
         freeSolo
@@ -269,7 +269,7 @@ The code I wrote into the edit and create poem API call functions I felt was ove
 
 ## Challenges
 
-Overall I was very satisfied with this project as it posed quite several new problems which I hadn’t come across before, but which I feel like I overcame and learned from. Three notable challenges from this project I would say were:
+Overall I was very satisfied with this project as it posed several new problems which I hadn’t come across before, but which I feel like I overcame and learned from. Three notable challenges from this project I would say were:
 
 - Having to address the processing issues that came with handling large amounts of data.
 - Finding ways of benefiting from the built-in design features of MUI components while still maintaining the flexibility of setting global styles that comes with CSS and SASS.
