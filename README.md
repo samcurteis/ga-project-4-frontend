@@ -78,7 +78,7 @@ I also wrote some pseudocode of what I wanted the backend models to look like.
 
 ### Styling
 
-With the previous projects that I had completed, because the creation of components and implementing CRUD functionality was the most challenging aspect of building the app, styling tended to be implemented fairly last minute, meaning I ended up with an app that in terms of functionality I was quite proud of, but I didn’t feel super satisfied when it came to design and wish I had done more. To make sure this didn’t happen again I focussed at the planning stage on setting MVP functionality goals that were actually minimal, while also setting MVP design goals which would be completed before moving on to any additional features. 
+With the previous projects that I had completed, because the creation of components and implementing CRUD functionality was the most challenging aspect of building the app, styling tended to be implemented fairly last minute, meaning I ended up with an app that in terms of functionality I was quite proud of, but I didn’t feel super satisfied when it came to design and wish I had done more. To make sure this didn’t happen again I focussed at the planning stage on setting MVP (Minimum Viable Product) functionality goals that were actually minimal, while also setting MVP design goals which would be completed before moving on to any additional features. 
 
 ### Finding a dataset
 
