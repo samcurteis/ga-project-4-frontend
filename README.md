@@ -92,7 +92,7 @@ With my initial idea of creating an app for quotes, I found some datasets, but n
 
 For seeding the database I found a method that uses a scripts folder and load.py file. One dilemma I had however is that I wanted to have data not just on poems but also on authors so that users could search by author and also see all the poems that one author has on the website. I got around this problem by using the get_or_create method so that authors would not be duplicated.
 
-```
+```.py
     for poem in read_file:
              if count == 1:
                  pass
@@ -109,7 +109,7 @@ Throughout this project, because of the amount of data stored in the database, I
 
 I found various ways of doing this, such as ordering the data by favourites and then calling only the first six items for the most popular poems, authors and posts.
 
-```
+```.py
 def get(self, _request):
         poems = Poem.objects.order_by('poem_favorites')[:6]
         serialized_poems = PopulatedPoemSerializer(poems, many=True)
@@ -118,7 +118,7 @@ def get(self, _request):
 
 I also added reduced serializers which I would use when calling a lot of data to make sure that I was receiving nothing more than I needed to maximise efficiency.
 
-```
+```.py
 class ReducedPoemSerializer(serializers.ModelSerializer):
          class Meta:
              model = Poem
@@ -135,7 +135,7 @@ After completing the search page I realised that users could only find content i
 
  I decided to arrange them into alphabetical categories, but whereas before I might have used a filter function on the frontend to achieve this, I realised that would not be ideal in this circumstance as it would mean calling all of the data at once, which slowed down the speed of the app significantly. To resolve this issue I thought I would see if there’d be a way of doing the same thing in the backend, and came across Django’s `startswith` filter option, as well as ‘Q’, which allowed me to exclude ‘the’ at the beginning of poems which would overpopulate the ‘T’ category.
 
- ```
+ ```.py
  class PoemIndexSearchView(APIView):
          def get(self, request):
              query = request.GET.get('search')
