@@ -210,7 +210,7 @@ export default function NewPoemPage({ singlePoem }) {
               Create new author
             </CommonButton>
           ) : (
-            console.log('author found')
+             null 
           )}
           <TextareaAutosize
             rows={10}

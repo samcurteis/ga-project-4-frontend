@@ -1,14 +1,15 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { API } from '../lib/api';
-import { AUTH } from '../lib/auth';
-// import { useAuthenticated } from '../hooks/useAuthenticated';
+import { AUTH } from '../../lib/auth';
 
 import { Container, Box } from '@mui/material';
 
-import CommonButton from './common/CommonButton';
-import CommonTypography from './common/CommonTypography';
-import ProfilePicture from './common/ProfilePicture';
+import CommonButton from '../../components/common/CommonButton';
+import CommonTypography from '../../components/common/CommonTypography';
+import ProfilePicture from '../../components/common/ProfilePicture';
+
+import { useDispatch, useSelector } from 'react-redux';
+import { loadCurrentUser, selectCurrentUser, isLoadingCurrentUser } from './userPageSlice.js';
 
 export default function UserPage({ setSinglePost, setSinglePoem }) {
   // const [isLoggedIn] = useAuthenticated();
@@ -27,18 +28,22 @@ export default function UserPage({ setSinglePost, setSinglePoem }) {
     navigate(`/new-poem`);
   };
   const { id } = useParams();
-  const [singleUser, setSingleUser] = useState(null);
+  
+  const dispatch = useDispatch();
+  const currentUser = useSelector(selectCurrentUser);
+  const currentUserIsLoading = useSelector(isLoadingCurrentUser);
+  
 
   useEffect(() => {
-    API.GET(API.ENDPOINTS.singleUser(id))
-      .then(({ data }) => {
-        setSingleUser(data);
-        console.log(data);
-      })
-      .catch(({ message, response }) => {
-        console.error(message, response);
-      });
-  }, [id]);
+      dispatch(loadCurrentUser(id));
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
+
+    if (currentUserIsLoading) {
+        return <h1>Loading</h1>
+    } else if (!currentUser) {
+        return null
+    }
 
   return (
     <Container className='userpage Page'>
@@ -79,12 +84,12 @@ export default function UserPage({ setSinglePost, setSinglePoem }) {
               }}
             >
               <ProfilePicture
-                cloudinaryImageId={singleUser?.profile_image}
+                cloudinaryImageId={currentUser?.profile_image}
                 size={100}
               />
-              <h1>{singleUser?.username}</h1>
+              <h1>{currentUser?.username}</h1>
             </Box>
-            {singleUser?.is_staff & AUTH.isOwner(+id) ? (
+            {currentUser?.is_staff & AUTH.isOwner(+id) ? (
               <CommonButton onClick={navigateToNewPoem}>
                 add new poem
               </CommonButton>
@@ -100,9 +105,8 @@ export default function UserPage({ setSinglePost, setSinglePoem }) {
               justifyContent: 'center'
             }}
           >
-            {singleUser?.posts.length === 0 ? <></> : <h2>Posts</h2>}
-            {singleUser?.posts?.map((post) => (
-              <>
+            {currentUser?.posts.length === 0 ? <></> : <h2>Posts</h2>}
+            {currentUser?.posts?.map((post) => (
                 <p
                   className='userpage post-title'
                   onClick={navigateToPost}
@@ -111,7 +115,6 @@ export default function UserPage({ setSinglePost, setSinglePoem }) {
                 >
                   {post.title}
                 </p>
-              </>
             ))}
             {AUTH.isOwner(+id) && (
               <CommonButton
@@ -134,12 +137,12 @@ export default function UserPage({ setSinglePost, setSinglePoem }) {
           }}
         >
           <Box>
-            {singleUser?.poem_favorites.length === 0 ? (
+            {currentUser?.poem_favorites.length === 0 ? (
               <></>
             ) : (
               <h2> Favourite poems</h2>
             )}
-            {singleUser?.poem_favorites.map((poem) => (
+            {currentUser?.poem_favorites.map((poem) => (
               <>
                 <p
                   className='poem-title'
@@ -159,12 +162,12 @@ export default function UserPage({ setSinglePost, setSinglePoem }) {
                 </CommonTypography>
               </>
             ))}
-            {singleUser?.poem_favorites.length === 0 ? (
+            {currentUser?.poem_favorites.length === 0 ? (
               <></>
             ) : (
               <h2> Favourite authors</h2>
             )}
-            {singleUser?.favorite_authors.map((author) => (
+            {currentUser?.favorite_authors.map((author) => (
               <CommonTypography
                 sx={{ paddingLeft: '5px' }}
                 onClick={navigateToAuthor}
@@ -176,18 +179,18 @@ export default function UserPage({ setSinglePost, setSinglePoem }) {
             ))}
           </Box>
           <Box>
-            {singleUser?.post_favorites.length === 0 ? (
+            {currentUser?.post_favorites.length === 0 ? (
               <></>
             ) : (
               <h2>Favourite posts</h2>
             )}
 
-            {singleUser?.post_favorites.map((post) => (
-              <>
+            {currentUser?.post_favorites.map((post, i) => (
+              <div key={i}>
                 <p
                   className='post-title'
                   onClick={navigateToPost}
-                  key={post.name}
+                  key={i}
                   id={post.id}
                 >
                   {post.title}
@@ -200,19 +203,22 @@ export default function UserPage({ setSinglePost, setSinglePoem }) {
                     paddingLeft: '20px'
                   }}
                   className='user-data'
+                key={i}
                 >
                   <ProfilePicture
                     cloudinaryImageId={post.author.profile_image}
+                    key={i}
                   />
                   <CommonTypography
                     sx={{ fontSize: '18px' }}
                     onClick={navigateToUser}
                     id={post.author.id}
+                    key={i}
                   >
                     {post.author.username}
                   </CommonTypography>
                 </Box>
-              </>
+              </ div>
             ))}
           </Box>
         </Box>
